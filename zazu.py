@@ -31,7 +31,8 @@ async def handle_barge_in(decoded,twilio_ws,streamsid):
         await twilio_ws.send(json.dumps(clear_message))
 
 async def handle_text(decoded,twilio_ws,sts_ws,streamsid):
-    pass
+    await handle_barge_in(decoded,twilio_ws,streamsid)
+    #TODO handle function calling
 
 async def sts_sender(sts_ws,audio_queue):
     print("Starting STS sender")
