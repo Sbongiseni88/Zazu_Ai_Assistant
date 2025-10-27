@@ -1,1 +1,1 @@
-# Zazi_Ai_Assistant
+# Zazu_Ai_Assistant
