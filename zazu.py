@@ -29,7 +29,10 @@ async def handle_text(decoded,twilio_ws,sts_ws,streamsid):
     pass
 
 async def sts_sender(sts_ws,audio_queue):
-    pass
+    print("Starting STS sender")
+    while True:
+        chunk=await audio_queue.get()
+        await sts_ws.send(chunk)
 
 async def sts_receiver(sts_ws,twilio_ws,streamsid_queue):
     pass
