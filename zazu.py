@@ -23,7 +23,12 @@ def load_config():
     return config
 
 async def handle_barge_in(decoded,twilio_ws,streamsid):
-    pass 
+    if decoded["type"]=="UserStartedSpeaking":
+        clear_message={
+            "event":"clear",
+            "streamsid":streamsid
+        }
+        await twilio_ws.send(json.dumps(clear_message))
 
 async def handle_text(decoded,twilio_ws,sts_ws,streamsid):
     pass
@@ -35,7 +40,25 @@ async def sts_sender(sts_ws,audio_queue):
         await sts_ws.send(chunk)
 
 async def sts_receiver(sts_ws,twilio_ws,streamsid_queue):
-    pass
+    print("Starting STS receiver")
+    streamsid= await streamsid_queue.get()
+
+    async for message in sts_ws:
+        if type(message) is str:
+            print("STS message:",message)
+            decoded=json.loads(message)
+            await handle_text(decoded,twilio_ws,sts_ws,streamsid)
+            continue
+
+        raw_mulaw=message
+
+        media_message={
+            "event":"media",
+            "streamsid":streamsid,
+            "media":{"payload":base64.b64encode(raw_mulaw).decode('ascii')}
+        }
+
+        await twilio_ws.send(json.dumps(media_message))
 
 async def twilio_receiver(twilio_ws,audio_queue,streamsid_queue):
     BUFFER_SIZE=20*160
