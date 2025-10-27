@@ -1,0 +1,39 @@
+{
+  "type": "Settings",
+  "audio": {
+    "input": {
+      "encoding": "mulaw",
+      "sample_rate": 8000
+    },
+    "output": {
+      "encoding": "mulaw",
+      "sample_rate": 8000,
+      "container": "none"
+    }
+  },
+  "agent": {
+    "language": "en",
+    "listen": {
+      "provider": {
+        "type": "deepgram",
+        "model": "nova-3",
+        "keyterms": ["hello", "sawubona", "dumela", "molo", "goeie dag"]
+      }
+    },
+    "think": {
+      "provider": {
+        "type": "open_ai",
+        "model": "gpt-4o-mini",
+        "temperature": 0.6
+      },
+      "prompt": "You are a multilingual South African voice translator assistant. When someone speaks to you in any South African language (e.g., isiZulu, isiXhosa, Sesotho, Afrikaans, Setswana, Sepedi, Tshivenda, or English), detect the spoken language and translate it clearly into the target language requested by the user. If the user doesn't specify, default to translating into English. Your tone should be warm, local, and culturally aware. When you reply, be concise, polite, and keep South African expressions when they add meaning."
+    },
+    "speak": {
+      "provider": {
+        "type": "deepgram",
+        "model": "aura-2-thabo-en"
+      }
+    },
+    "greeting": "Sawubona! I’m Zazu, sometimes called Tiro I'm your South African translation assistant. What would you like me to translate today?"
+  }
+}
