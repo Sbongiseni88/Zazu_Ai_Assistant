@@ -35,10 +35,25 @@ async def sts_receiver(sts_ws,twilio_ws,streamsid_queue):
     pass
 
 async def twilio_receiver(twilio_ws,audio_queue,streamsid_queue):
-    pass
+    BUFFER_SIZE=20*160
+    
 
 async def twilio_handler(twilio_ws):
-    pass
+    audio_queue=asyncio.Queue()
+    streamsid_queue=asyncio.Queue()
+
+    async with sts_connect() as sts_ws:
+        config_message=load_config()
+        await sts_ws.send(json.dumps(config_message))
+
+        await asyncio.wait([
+            asyncio.ensure_future(sts_sender(sts_ws,audio_queue)),
+            asyncio.ensure_future(sts_receiver(sts_ws,twilio_ws,streamsid_queue)),
+            asyncio.ensure_future(twilio_receiver(twilio_ws,audio_queue,streamsid_queue))
+        ])
+
+        await twilio_ws.close()
+    
 
 async def main():
     await websockets.serve(twilio_handler, "localhost", 5000)
